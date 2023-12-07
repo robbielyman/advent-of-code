@@ -1,7 +1,10 @@
 const std = @import("std");
 
 pub fn main() !void {
-    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .{};
+    var timer = try std.time.Timer.start();
+    var gpa: std.heap.GeneralPurposeAllocator(.{
+        .verbose_log = true,
+    }) = .{};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
     const filename = try processArgs(allocator);
@@ -44,6 +47,7 @@ pub fn main() !void {
     const stdout = bw.writer();
     try stdout.print("{d}\n", .{min});
     try bw.flush();
+    std.debug.print("{d} milliseconds\n", .{@divTrunc(timer.read(), std.time.ns_per_ms)});
 }
 
 fn processArgs(allocator: std.mem.Allocator) ![]const u8 {
