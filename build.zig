@@ -1,24 +1,26 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const src_dir = std.fs.cwd().openIterableDir("src", .{}) catch @panic("openIterableDir failed!");
-    var walker = src_dir.walk(b.allocator) catch @panic("walking failed!");
-    while (walker.next() catch @panic("walking failed!")) |entry| {
+    const src_dir = try std.fs.cwd().openDir("src", .{});
+    var walker = try src_dir.walk(b.allocator);
+    while (try walker.next()) |entry| {
         if (std.mem.lastIndexOf(u8, entry.path, ".zig")) |idx| {
             const exe = b.addExecutable(.{
-                .name = std.mem.join(
+                .name = try std.mem.join(
                     b.allocator,
                     "-",
                     &.{ "adventofcode", entry.path[0..idx] },
-                ) catch @panic("OOM!"),
-                .root_source_file = .{ .path = std.mem.join(
-                    b.allocator,
-                    "/",
-                    &.{ "src", entry.path },
-                ) catch @panic("OOM!") },
+                ),
+                .root_source_file = .{
+                    .path = try std.mem.join(
+                        b.allocator,
+                        "/",
+                        &.{ "src", entry.path },
+                    ),
+                },
                 .target = target,
                 .optimize = optimize,
             });
@@ -30,11 +32,11 @@ pub fn build(b: *std.Build) void {
                 run_cmd.addArgs(args);
             }
 
-            const run_step = b.step(std.mem.join(
+            const run_step = b.step(try std.mem.join(
                 b.allocator,
                 "-",
                 &.{ "run", entry.path[0..idx] },
-            ) catch @panic("OOM!"), "Run the app");
+            ), "Run the app");
             run_step.dependOn(&run_cmd.step);
         }
     }
