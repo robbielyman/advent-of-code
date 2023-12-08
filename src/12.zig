@@ -24,7 +24,7 @@ pub fn main() !void {
         break :blk .{ times, distances };
     };
 
-    var count = numberOfWinningMoves(times, distances);
+    const count = numberOfWinningMoves(times, distances);
 
     const stdout_file = std.io.getStdOut().writer();
     var bw = std.io.bufferedWriter(stdout_file);

@@ -8,7 +8,7 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
     const filename = try processArgs(allocator);
-    var reader = try getReaderFromFilename(filename);
+    const reader = try getReaderFromFilename(filename);
     allocator.free(filename);
 
     var buffer = std.ArrayList(u8).init(allocator);
