@@ -7,6 +7,7 @@ pub fn build(b: *std.Build) !void {
     const src_dir = try std.fs.cwd().openDir("src", .{});
     var walker = try src_dir.walk(b.allocator);
     while (try walker.next()) |entry| {
+        if (std.mem.endsWith(u8, entry.path, ".zig~")) continue;
         if (std.mem.lastIndexOf(u8, entry.path, ".zig")) |idx| {
             const exe = b.addExecutable(.{
                 .name = try std.mem.join(
