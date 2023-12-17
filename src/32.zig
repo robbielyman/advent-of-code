@@ -1,6 +1,7 @@
 const std = @import("std");
 
 pub fn main() !void {
+    var timer = try std.time.Timer.start();
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .{};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -36,6 +37,7 @@ pub fn main() !void {
     var bw = std.io.bufferedWriter(stdout_file);
     const stdout = bw.writer();
     try stdout.print("{d}\n", .{count});
+    try stdout.print("time: {d}ms\n", .{@divTrunc(timer.read(), std.time.ns_per_ms)});
     try bw.flush();
 }
 
