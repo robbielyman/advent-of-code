@@ -137,5 +137,5 @@ test {
     try std.testing.expectEqual(6, try solve(std.testing.allocator, &obstacles, x_max, y_max, x, y));
 }
 
-const Direction = @import("directions.zig").Direction;
+const Direction = @import("aoc.zig").Direction;
 const std = @import("std");
