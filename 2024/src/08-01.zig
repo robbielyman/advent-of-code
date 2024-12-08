@@ -42,7 +42,7 @@ fn process(allocator: std.mem.Allocator, input: []const u8) !usize {
         try list_of_coordinates.ensureTotalCapacity(allocator, len);
         for (input, 0..) |byte, offset| {
             if (byte == frequency) {
-                const x, const y = aoc.indexToCoordinates(input, offset);
+                const x, const y = aoc.indexToCoordinates(offset, input.len, max_x) catch unreachable;
                 list_of_coordinates.appendAssumeCapacity(.{ @intCast(x), @intCast(y) });
             }
         }
