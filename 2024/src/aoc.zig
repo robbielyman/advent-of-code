@@ -60,4 +60,57 @@ pub fn indexToCoordinates(offset: usize, len: usize, line_length: usize) error{ 
     return .{ one_indexed_x - 1, y };
 }
 
+test {
+    const input =
+        \\89010123
+        \\78121874
+        \\87430965
+        \\96549874
+        \\45678903
+        \\32019012
+        \\01329801
+        \\10456732
+    ;
+    const max_x, const max_y = dimensions(input);
+    try std.testing.expectEqualSlices(usize, &.{ 8, 8 }, &.{ max_x, max_y });
+    const expectations: []const [2]usize = &.{
+        .{ 0, 2 },
+        .{ 0, 4 },
+        .{ 2, 4 },
+        .{ 4, 6 },
+        .{ 5, 2 },
+        .{ 5, 5 },
+        .{ 6, 0 },
+        .{ 6, 6 },
+        .{ 7, 1 },
+    };
+    var i: usize = 0;
+    var idx: usize = 0;
+    while (std.mem.indexOfScalarPos(u8, input, i, '0')) |offset| {
+        i = offset + 1;
+        const x, const y = try indexToCoordinates(offset, input.len, max_x + 1);
+        const e_y, const e_x = expectations[idx];
+        idx += 1;
+        try std.testing.expectEqualSlices(usize, &.{ e_x, e_y }, &.{ x, y });
+    }
+    const directions: []const Direction = &.{ .north, .east, .south, .west, .northeast, .northwest, .southeast, .southwest };
+    const expected_neighbors = "91890809";
+    var neighbors: [8]u8 = undefined;
+    for (directions, 0..) |direction, j| {
+        const x, const y = try direction.walk(5, 5, max_x - 1, max_y - 1);
+        const offset = try coordinatesToIndex(x, y, max_x, max_y);
+        neighbors[j] = input[offset];
+    }
+    try std.testing.expectEqualStrings(expected_neighbors, &neighbors);
+}
+
+/// for a rectangular, newline delimited ASCII grid
+/// returns the byte offset for a given coordinate
+/// x_max and y_max should be one more than the actually occurring possible values
+/// for x and y respectively
+pub fn coordinatesToIndex(x: usize, y: usize, x_max: usize, y_max: usize) error{OutOfBounds}!usize {
+    if (x >= x_max or y >= y_max) return error.OutOfBounds;
+    return (y * (x_max + 1)) + x;
+}
+
 const std = @import("std");
