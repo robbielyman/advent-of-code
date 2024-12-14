@@ -1,0 +1,11 @@
+.{
+    .name = "2024-day-14-part-2",
+    .version = "0.1.0",
+    .paths = .{ "build.zig.zon", "build.zig", "src/14.zig" },
+    .dependencies = .{
+        .vaxis = .{
+            .url = "git+https://github.com/rockorager/libvaxis?ref=main#f06c11fc848ce2dd37d5a2d4d28ba995bd437894",
+            .hash = "1220381e092855763e15d3b34c1f98abab38f4f618018db5e68b0c56452dbd3caf7b",
+        },
+    },
+}
