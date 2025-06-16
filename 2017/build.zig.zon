@@ -1,0 +1,11 @@
+.{
+    .name = .aoc_2017,
+    .minimum_zig_version = "0.14.0",
+    .fingerprint = 0x301711a963be9cd3, // changing this has trust and security implications
+    .version = "0.0.0",
+    .paths = .{
+        "build.zig.zon",
+        "build.zig",
+        "src",
+    },
+}
