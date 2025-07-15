@@ -18,10 +18,11 @@ pub fn main() !void {
     const output = try solution.process(allocator, input);
     const elapsed = timer.lap();
 
-    var bw = std.io.bufferedWriter(std.io.getStdOut().writer());
-    const stdout = bw.writer();
+    var buf: [2048]u8 = undefined;
+    var bw = std.fs.File.stdout().writer(&buf);
+    const stdout = &bw.interface;
 
     try stdout.print("{}\n", .{output});
     try stdout.print("time elapsed: {}us\n", .{elapsed / std.time.ns_per_us});
-    try bw.flush();
+    try bw.end();
 }
