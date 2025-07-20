@@ -22,7 +22,10 @@ pub fn main() !void {
     var bw = std.fs.File.stdout().writer(&buf);
     const stdout = &bw.interface;
 
-    try stdout.print("{}\n", .{output});
+    if (@typeInfo(@TypeOf(output)) == .array)
+        try stdout.print("{s}\n", .{&output})
+    else
+        try stdout.print("{}\n", .{output});
     try stdout.print("time elapsed: {}us\n", .{elapsed / std.time.ns_per_us});
     try bw.end();
 }
