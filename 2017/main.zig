@@ -29,3 +29,5 @@ pub fn main() !void {
     try stdout.print("time elapsed: {}us\n", .{elapsed / std.time.ns_per_us});
     try bw.end();
 }
+
+pub const std_options: std.Options = if (@hasDecl(solution, "std_options")) solution.std_options else .{};
